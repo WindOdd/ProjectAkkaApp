@@ -8,6 +8,8 @@
 import Foundation
 import Network
 import Combine
+
+@MainActor
 class UDPDiscoveryService: ObservableObject {
     @Published var discoveredServer: ServerDiscoveryResponse?
     @Published var isSearching = false
@@ -90,11 +92,15 @@ class UDPDiscoveryService: ObservableObject {
     private func sendBroadcast() {
         let host = NWEndpoint.Host("255.255.255.255")
         let port = NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultPort))
-        
+
         connection = NWConnection(host: host, port: port, using: .udp)
         connection?.start(queue: .global())
-        
-        let payload = Constants.udpDiscoveryPayload.data(using: .utf8)!
+
+        guard let payload = Constants.udpDiscoveryPayload.data(using: .utf8) else {
+            print("❌ UDP payload 編碼失敗")
+            return
+        }
+
         connection?.send(content: payload, completion: .contentProcessed { error in
             if let error = error {
                 print("❌ UDP 發送失敗: \(error)")
