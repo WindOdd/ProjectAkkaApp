@@ -12,11 +12,13 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showResetAlert = false
-    
+
+    let isSystemReady: Bool
     var onConnectionSuccess: (() -> Void)?
-    
-    init(settingsStore: SettingsStore, onConnectionSuccess: (() -> Void)? = nil) {
+
+    init(settingsStore: SettingsStore, isSystemReady: Bool = true, onConnectionSuccess: (() -> Void)? = nil) {
         _viewModel = StateObject(wrappedValue: SettingsViewModel(settingsStore: settingsStore))
+        self.isSystemReady = isSystemReady
         self.onConnectionSuccess = onConnectionSuccess
     }
     
@@ -93,7 +95,16 @@ struct SettingsView: View {
             }
             .onAppear {
                 // 混合模式：如果 IP 為空，自動開始 UDP Discovery
-                viewModel.checkAutoDiscovery()
+                // 等待系統就緒（Local Network 權限觸發完成）後再開始
+                if isSystemReady {
+                    viewModel.checkAutoDiscovery()
+                }
+            }
+            .onChange(of: isSystemReady) { newValue in
+                // 當系統就緒時，如果尚未開始 Discovery 則啟動
+                if newValue && !viewModel.isDiscovering && viewModel.serverIP.isEmpty {
+                    viewModel.checkAutoDiscovery()
+                }
             }
             .onChange(of: viewModel.connectionTestResult) { _ in
                 if case .success = viewModel.connectionTestResult {
@@ -113,5 +124,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(settingsStore: SettingsStore())
+    SettingsView(settingsStore: SettingsStore(), isSystemReady: true)
 }
