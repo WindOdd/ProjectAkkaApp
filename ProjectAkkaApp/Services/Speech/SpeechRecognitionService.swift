@@ -103,16 +103,17 @@ class SpeechRecognitionService: ObservableObject {
         recognitionTask = nil
         
         isRecording = false
-        
+
         // 重設 Audio Session (為 TTS 準備)
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.playback, mode: .default)
             try audioSession.setActive(true)
         } catch {
-            print("⚠️ Audio Session 重設失敗: \(error)")
+            errorMessage = "Audio Session 重設失敗: \(error.localizedDescription)"
+            print("⚠️ \(errorMessage ?? "")")
         }
-        
+
         print("🎤 停止錄音，辨識結果: \(transcript)")
     }
     
@@ -153,13 +154,16 @@ class SpeechRecognitionService: ObservableObject {
 enum SpeechError: Error, LocalizedError {
     case recognizerNotAvailable
     case requestCreationFailed
-    
+    case audioSessionFailed(Error)
+
     var errorDescription: String? {
         switch self {
         case .recognizerNotAvailable:
             return "語音辨識服務不可用"
         case .requestCreationFailed:
             return "無法建立語音辨識請求"
+        case .audioSessionFailed(let error):
+            return "Audio Session 設定失敗: \(error.localizedDescription)"
         }
     }
 }

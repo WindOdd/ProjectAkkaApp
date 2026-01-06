@@ -23,29 +23,23 @@ class HistoryManager: ObservableObject {
     func addExchange(userContent: String, assistantContent: String, intent: String?) {
         let userMessage = ChatMessage(role: "user", content: userContent, intent: nil)
         let assistantMessage = ChatMessage(role: "assistant", content: assistantContent, intent: intent)
-        
+
         messages.append(userMessage)
         messages.append(assistantMessage)
-        
-        // FIFO: 超過上限移除最舊的一組
-        trimIfNeeded()
-        
+
+        // FIFO: 超過上限移除最舊的一組（優化：只在超過時才 trim）
+        if messages.count > maxRounds * 2 {
+            messages.removeFirst(2)
+            print("📝 History 移除最舊的一組對話 (FIFO)")
+        }
+
         print("📝 History 新增對話，目前共 \(messages.count / 2) 輪")
     }
-    
+
     /// 清空所有歷史 (Session 銷毀時呼叫)
     func clear() {
         messages.removeAll()
         print("📝 History 已清空")
-    }
-    
-    // MARK: - Private
-    
-    private func trimIfNeeded() {
-        while messages.count > maxRounds * 2 {
-            messages.removeFirst(2)
-            print("📝 History 移除最舊的一組對話 (FIFO)")
-        }
     }
     
     // MARK: - Computed Properties
