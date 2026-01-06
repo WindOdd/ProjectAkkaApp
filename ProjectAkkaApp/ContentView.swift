@@ -6,17 +6,18 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @EnvironmentObject var settingsStore: SettingsStore
     @EnvironmentObject var sessionManager: SessionManager
     @EnvironmentObject var permissionManager: PermissionManager
-    
+
     @State private var hasInitialized = false
     @State private var showPermissionAlert = false
     @State private var isSystemReady = false
     @State private var loadingMessage = "系統啟動中..."
-    
+
     var body: some View {
         ZStack {
             // 主畫面
@@ -33,7 +34,10 @@ struct ContentView: View {
             }
             .disabled(!isSystemReady)  // 未就緒時禁用互動
             .blur(radius: isSystemReady ? 0 : 3)  // 模糊效果
-            
+
+            // 隱藏的 TextField 用於預熱鍵盤
+            KeyboardPreWarmer()
+
             // 啟動 Loading 遮罩
             if !isSystemReady {
                 StartupLoadingView(message: loadingMessage)
@@ -59,11 +63,16 @@ struct ContentView: View {
             print("🚀 App 啟動：預熱 TTS...")
             await TTSService.shared.preWarm()
 
-            // 3. 系統就緒
+            // 3. 預熱鍵盤（消除首次點擊延遲）
+            loadingMessage = "系統初始化中..."
+            print("🚀 App 啟動：預熱鍵盤...")
+            await preWarmKeyboard()
+
+            // 4. 系統就緒
             print("🚀 App 啟動完成！")
             isSystemReady = true
 
-            // 4. 顯示權限缺失警告
+            // 5. 顯示權限缺失警告
             if !permissionManager.allPermissionsGranted {
                 showPermissionAlert = true
             }
@@ -79,29 +88,82 @@ struct ContentView: View {
             Text("請在設定中允許麥克風和語音辨識權限，以使用語音功能。")
         }
     }
+
+    // MARK: - Keyboard Pre-warming
+
+    /// 預熱鍵盤，消除首次點擊延遲
+    private func preWarmKeyboard() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                // 觸發鍵盤預熱通知
+                NotificationCenter.default.post(name: .keyboardPreWarmTrigger, object: nil)
+
+                // 等待一小段時間讓鍵盤完成初始化
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    print("⌨️ 鍵盤預熱完成")
+                    continuation.resume()
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Keyboard Pre-warmer
+
+/// 隱藏的 TextField，用於在啟動時預熱鍵盤
+struct KeyboardPreWarmer: UIViewRepresentable {
+    func makeUIView(context: Context) -> UITextField {
+        let textField = UITextField()
+        textField.isHidden = true
+        textField.frame = .zero
+
+        // 監聽預熱觸發通知
+        NotificationCenter.default.addObserver(
+            forName: .keyboardPreWarmTrigger,
+            object: nil,
+            queue: .main
+        ) { _ in
+            // 成為 first responder 觸發鍵盤載入
+            textField.becomeFirstResponder()
+            // 立即 resign 隱藏鍵盤
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                textField.resignFirstResponder()
+            }
+        }
+
+        return textField
+    }
+
+    func updateUIView(_ uiView: UITextField, context: Context) {}
+}
+
+// MARK: - Notification Extension
+
+extension Notification.Name {
+    static let keyboardPreWarmTrigger = Notification.Name("keyboardPreWarmTrigger")
 }
 
 // MARK: - Startup Loading View
 
 struct StartupLoadingView: View {
     let message: String
-    
+
     var body: some View {
         ZStack {
             // 背景
             Color(.systemBackground)
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 30) {
                 // App Logo 或名稱
                 Text("阿卡")
                     .font(.system(size: 60, weight: .bold, design: .rounded))
                     .foregroundColor(.blue)
-                
+
                 // Loading 動畫
                 ProgressView()
                     .scaleEffect(1.5)
-                
+
                 // 狀態訊息
                 Text(message)
                     .font(.headline)
