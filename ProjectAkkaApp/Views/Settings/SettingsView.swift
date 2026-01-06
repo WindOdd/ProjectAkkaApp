@@ -23,6 +23,33 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // UDP Discovery 狀態
+                if viewModel.isDiscovering || !viewModel.discoveryStatus.isEmpty {
+                    Section {
+                        HStack {
+                            if viewModel.isDiscovering {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            }
+                            Text(viewModel.discoveryStatus)
+                                .foregroundColor(viewModel.discoveryStatus.contains("✅") ? .green : .secondary)
+                        }
+                        
+                        if viewModel.isDiscovering {
+                            Button("停止搜尋") {
+                                viewModel.stopDiscovery()
+                            }
+                            .foregroundColor(.red)
+                        } else if viewModel.serverIP.isEmpty {
+                            Button("重新搜尋") {
+                                viewModel.startDiscovery()
+                            }
+                        }
+                    } header: {
+                        Text("自動搜尋")
+                    }
+                }
+                
                 // 連線設定區塊
                 Section("連線設定") {
                     ConnectionSettingsView(viewModel: viewModel)
@@ -58,10 +85,15 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("完成") {
+                        viewModel.stopDiscovery()
                         viewModel.saveSettings()
                         dismiss()
                     }
                 }
+            }
+            .onAppear {
+                // 混合模式：如果 IP 為空，自動開始 UDP Discovery
+                viewModel.checkAutoDiscovery()
             }
             .onChange(of: viewModel.connectionTestResult) { _ in
                 if case .success = viewModel.connectionTestResult {
@@ -83,4 +115,3 @@ struct SettingsView: View {
 #Preview {
     SettingsView(settingsStore: SettingsStore())
 }
-
