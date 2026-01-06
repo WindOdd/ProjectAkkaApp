@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class SettingsStore: ObservableObject {
     @Published var settings: AppSettings {
         didSet {

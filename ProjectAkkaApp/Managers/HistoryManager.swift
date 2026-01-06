@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class HistoryManager: ObservableObject {
     @Published private(set) var messages: [ChatMessage] = []
     

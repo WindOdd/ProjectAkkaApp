@@ -9,6 +9,8 @@ import Foundation
 import Speech
 import AVFoundation
 import Combine
+
+@MainActor
 class PermissionManager: ObservableObject {
     @Published var microphoneStatus: PermissionStatus = .unknown
     @Published var speechRecognitionStatus: PermissionStatus = .unknown

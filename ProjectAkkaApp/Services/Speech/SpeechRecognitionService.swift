@@ -9,6 +9,8 @@ import Foundation
 import Speech
 import AVFoundation
 import Combine
+
+@MainActor
 class SpeechRecognitionService: ObservableObject {
     @Published var transcript = ""
     @Published var isRecording = false
@@ -76,14 +78,16 @@ class SpeechRecognitionService: ObservableObject {
         // 開始辨識
         recognitionTask = recognizer.recognitionTask(with: request) { [weak self] result, error in
             guard let self = self else { return }
-            
-            if let result = result {
-                self.transcript = result.bestTranscription.formattedString
-            }
-            
-            if let error = error {
-                self.errorMessage = error.localizedDescription
-                self.stopRecording()
+
+            Task { @MainActor in
+                if let result = result {
+                    self.transcript = result.bestTranscription.formattedString
+                }
+
+                if let error = error {
+                    self.errorMessage = error.localizedDescription
+                    self.stopRecording()
+                }
             }
         }
         

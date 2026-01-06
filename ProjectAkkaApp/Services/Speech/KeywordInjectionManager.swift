@@ -7,6 +7,8 @@
 
 import Foundation
 import Combine
+
+@MainActor
 class KeywordInjectionManager: ObservableObject {
     @Published private(set) var keywords: [String] = []
     
