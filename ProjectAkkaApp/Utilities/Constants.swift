@@ -9,7 +9,8 @@ import Foundation
 
 enum Constants {
     // MARK: - Network
-    static let defaultPort: Int = 37020
+    static let defaultHTTPPort: Int = 8000        // HTTP API 端口
+    static let defaultUDPPort: Int = 37020        // UDP 廣播端口
     static let udpDiscoveryPayload = "DISCOVER_AKKA_SERVER"
     
     // MARK: - Timeout (seconds)

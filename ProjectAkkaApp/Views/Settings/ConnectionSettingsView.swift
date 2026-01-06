@@ -37,7 +37,7 @@ struct ConnectionSettingsView: View {
             HStack {
                 Label("埠號", systemImage: "number")
                 Spacer()
-                TextField("37020", text: $viewModel.serverPort)
+                TextField("8000", text: $viewModel.serverPort)
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)

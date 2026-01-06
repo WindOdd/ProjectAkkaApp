@@ -11,6 +11,7 @@ struct SettingsView: View {
     @EnvironmentObject var settingsStore: SettingsStore
     @StateObject private var viewModel: SettingsViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var showResetAlert = false
     
     var onConnectionSuccess: (() -> Void)?
     
@@ -35,6 +36,22 @@ struct SettingsView: View {
                         Label("語音設定", systemImage: "speaker.wave.3")
                     }
                 }
+                
+                // 重置設定區塊
+                Section {
+                    Button(role: .destructive) {
+                        showResetAlert = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.counterclockwise")
+                            Text("重置所有設定")
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                } footer: {
+                    Text("將所有設定恢復為預設值（桌號、伺服器 IP、埠號 8000、語音設定）")
+                        .font(.caption)
+                }
             }
             .navigationTitle("設定")
             .navigationBarTitleDisplayMode(.large)
@@ -50,6 +67,14 @@ struct SettingsView: View {
                 if case .success = viewModel.connectionTestResult {
                     onConnectionSuccess?()
                 }
+            }
+            .alert("確認重置", isPresented: $showResetAlert) {
+                Button("取消", role: .cancel) { }
+                Button("重置", role: .destructive) {
+                    viewModel.resetSettings()
+                }
+            } message: {
+                Text("所有設定將恢復為預設值，確定要繼續嗎？")
             }
         }
     }

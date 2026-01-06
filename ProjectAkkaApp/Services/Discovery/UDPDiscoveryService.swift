@@ -89,7 +89,7 @@ class UDPDiscoveryService: ObservableObject {
     
     private func sendBroadcast() {
         let host = NWEndpoint.Host("255.255.255.255")
-        let port = NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultPort))
+        let port = NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultUDPPort))
         
         connection = NWConnection(host: host, port: port, using: .udp)
         connection?.start(queue: .global())
@@ -107,7 +107,7 @@ class UDPDiscoveryService: ObservableObject {
             let params = NWParameters.udp
             params.allowLocalEndpointReuse = true
             
-            listener = try NWListener(using: params, on: NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultPort)))
+            listener = try NWListener(using: params, on: NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultUDPPort)))
             
             listener?.newConnectionHandler = { [weak self] connection in
                 connection.start(queue: .global())

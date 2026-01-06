@@ -46,7 +46,12 @@ class SettingsViewModel: ObservableObject {
     func saveSettings() {
         settingsStore.settings.tableId = tableId
         settingsStore.settings.serverIP = serverIP
-        settingsStore.settings.serverPort = Int(serverPort) ?? Constants.defaultPort
+        settingsStore.settings.serverPort = Int(serverPort) ?? Constants.defaultHTTPPort
+    }
+    
+    func resetSettings() {
+        settingsStore.reset()
+        loadSettings()
     }
     
     // MARK: - Connection Test
