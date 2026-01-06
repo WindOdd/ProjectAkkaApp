@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import Network
 
 struct ContentView: View {
     @EnvironmentObject var settingsStore: SettingsStore
@@ -60,11 +61,16 @@ struct ContentView: View {
             print("🚀 App 啟動：預熱 TTS...")
             await TTSService.shared.preWarm()
 
-            // 3. 系統就緒
+            // 3. 觸發 Local Network 權限 (會彈出系統權限請求)
+            loadingMessage = "正在準備網路連線..."
+            print("🚀 App 啟動：觸發 Local Network 權限...")
+            await triggerLocalNetworkPermission()
+
+            // 4. 系統就緒
             print("🚀 App 啟動完成！")
             isSystemReady = true
 
-            // 4. 顯示權限缺失警告
+            // 5. 顯示權限缺失警告
             if !permissionManager.allPermissionsGranted {
                 showPermissionAlert = true
             }
@@ -78,6 +84,46 @@ struct ContentView: View {
             Button("稍後再說", role: .cancel) { }
         } message: {
             Text("請在設定中允許麥克風和語音辨識權限，以使用語音功能。")
+        }
+    }
+    
+    // MARK: - Local Network Permission Trigger
+    
+    /// 觸發 Local Network 權限請求
+    /// iOS 會在首次網路連線時彈出權限提示，這裡主動觸發
+    private func triggerLocalNetworkPermission() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            // 發送一個 UDP 廣播來觸發 Local Network 權限
+            let connection = NWConnection(
+                host: "255.255.255.255",
+                port: NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultUDPPort)),
+                using: .udp
+            )
+            
+            connection.stateUpdateHandler = { state in
+                switch state {
+                case .ready:
+                    // 連線就緒，發送一個空包觸發權限
+                    let payload = "PING".data(using: .utf8)!
+                    connection.send(content: payload, completion: .contentProcessed { _ in
+                        connection.cancel()
+                    })
+                case .failed, .cancelled:
+                    break
+                default:
+                    break
+                }
+            }
+            
+            connection.start(queue: .global())
+            
+            // 等待足夠時間讓系統彈出權限對話框
+            // 使用者授權後會自動繼續
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                connection.cancel()
+                print("🌐 Local Network 權限觸發完成")
+                continuation.resume()
+            }
         }
     }
 }
