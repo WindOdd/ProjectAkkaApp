@@ -11,6 +11,7 @@ struct SettingsView: View {
     @EnvironmentObject var settingsStore: SettingsStore
     @StateObject private var viewModel: SettingsViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var showResetAlert = false
     
     var onConnectionSuccess: (() -> Void)?
     
@@ -22,6 +23,33 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // UDP Discovery 狀態
+                if viewModel.isDiscovering || !viewModel.discoveryStatus.isEmpty {
+                    Section {
+                        HStack {
+                            if viewModel.isDiscovering {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            }
+                            Text(viewModel.discoveryStatus)
+                                .foregroundColor(viewModel.discoveryStatus.contains("✅") ? .green : .secondary)
+                        }
+                        
+                        if viewModel.isDiscovering {
+                            Button("停止搜尋") {
+                                viewModel.stopDiscovery()
+                            }
+                            .foregroundColor(.red)
+                        } else if viewModel.serverIP.isEmpty {
+                            Button("重新搜尋") {
+                                viewModel.startDiscovery()
+                            }
+                        }
+                    } header: {
+                        Text("自動搜尋")
+                    }
+                }
+                
                 // 連線設定區塊
                 Section("連線設定") {
                     ConnectionSettingsView(viewModel: viewModel)
@@ -35,21 +63,50 @@ struct SettingsView: View {
                         Label("語音設定", systemImage: "speaker.wave.3")
                     }
                 }
+                
+                // 重置設定區塊
+                Section {
+                    Button(role: .destructive) {
+                        showResetAlert = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.counterclockwise")
+                            Text("重置所有設定")
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                } footer: {
+                    Text("將所有設定恢復為預設值（桌號、伺服器 IP、埠號 8000、語音設定）")
+                        .font(.caption)
+                }
             }
             .navigationTitle("設定")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("完成") {
+                        viewModel.stopDiscovery()
                         viewModel.saveSettings()
                         dismiss()
                     }
                 }
             }
+            .onAppear {
+                // 混合模式：如果 IP 為空，自動開始 UDP Discovery
+                viewModel.checkAutoDiscovery()
+            }
             .onChange(of: viewModel.connectionTestResult) { _ in
                 if case .success = viewModel.connectionTestResult {
                     onConnectionSuccess?()
                 }
+            }
+            .alert("確認重置", isPresented: $showResetAlert) {
+                Button("取消", role: .cancel) { }
+                Button("重置", role: .destructive) {
+                    viewModel.resetSettings()
+                }
+            } message: {
+                Text("所有設定將恢復為預設值，確定要繼續嗎？")
             }
         }
     }
@@ -58,4 +115,3 @@ struct SettingsView: View {
 #Preview {
     SettingsView(settingsStore: SettingsStore())
 }
-

@@ -17,7 +17,7 @@ struct AppSettings: Codable {
     init(
         tableId: String = "TEST100",
         serverIP: String = "",
-        serverPort: Int = 37020,
+        serverPort: Int = 8000,  // HTTP API 端口
         ttsVoiceIdentifier: String = "",
         ttsSpeakingRate: Float = 0.5
     ) {

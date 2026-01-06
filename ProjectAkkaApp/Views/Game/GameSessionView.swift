@@ -65,22 +65,24 @@ struct GameSessionView: View {
                 viewModel.exitGame()
                 dismiss()
             } label: {
-                HStack {
+                HStack(spacing: 4) {
                     Image(systemName: "chevron.left")
+                        .font(.title3.weight(.semibold))
                     Text("離開")
+                        .font(.title3.weight(.semibold))
                 }
             }
             
             Spacer()
             
             Text(game.name)
-                .font(.headline)
+                .font(.title2.weight(.semibold))
             
             Spacer()
             
             // Placeholder for balance
             Color.clear
-                .frame(width: 60)
+                .frame(width: 80)
         }
         .padding()
         .background(Color(.systemBackground))

@@ -2,7 +2,7 @@
 //  SettingsViewModel.swift
 //  ProjectAkkaApp
 //
-//  設定頁邏輯 - 連線測試、儲存設定
+//  設定頁邏輯 - 連線測試、儲存設定、UDP Discovery
 //
 
 import Foundation
@@ -17,8 +17,14 @@ class SettingsViewModel: ObservableObject {
     @Published var isTestingConnection = false
     @Published var connectionTestResult: ConnectionResult?
     
+    // UDP Discovery
+    @Published var isDiscovering = false
+    @Published var discoveryStatus: String = ""
+    
     private let settingsStore: SettingsStore
     private var httpClient: HTTPClient?
+    private let udpDiscoveryService = UDPDiscoveryService()
+    private var cancellables = Set<AnyCancellable>()
     
     enum ConnectionResult: Equatable {
         case success
@@ -33,6 +39,7 @@ class SettingsViewModel: ObservableObject {
     init(settingsStore: SettingsStore) {
         self.settingsStore = settingsStore
         loadSettings()
+        setupDiscoveryObservers()
     }
     
     // MARK: - Load / Save
@@ -46,13 +53,65 @@ class SettingsViewModel: ObservableObject {
     func saveSettings() {
         settingsStore.settings.tableId = tableId
         settingsStore.settings.serverIP = serverIP
-        settingsStore.settings.serverPort = Int(serverPort) ?? Constants.defaultPort
+        settingsStore.settings.serverPort = Int(serverPort) ?? Constants.defaultHTTPPort
+    }
+    
+    func resetSettings() {
+        settingsStore.reset()
+        loadSettings()
+    }
+    
+    // MARK: - UDP Discovery
+    
+    private func setupDiscoveryObservers() {
+        // 監聽發現的 Server
+        udpDiscoveryService.$discoveredServer
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] response in
+                self?.serverIP = response.ip
+                self?.serverPort = String(response.port)
+                self?.discoveryStatus = "✅ 找到主機: \(response.ip)"
+                self?.saveSettings()
+            }
+            .store(in: &cancellables)
+        
+        // 監聽搜尋狀態
+        udpDiscoveryService.$isSearching
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$isDiscovering)
+        
+        // 監聯狀態訊息
+        udpDiscoveryService.$statusMessage
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$discoveryStatus)
+    }
+    
+    /// 檢查是否應該自動開始 UDP Discovery
+    func checkAutoDiscovery() {
+        if serverIP.isEmpty {
+            print("🔍 IP 為空，自動開始 UDP Discovery...")
+            startDiscovery()
+        }
+    }
+    
+    /// 手動開始 UDP Discovery
+    func startDiscovery() {
+        udpDiscoveryService.startDiscovery()
+    }
+    
+    /// 停止 UDP Discovery
+    func stopDiscovery() {
+        udpDiscoveryService.stopDiscovery()
     }
     
     // MARK: - Connection Test
     
     func testConnection() async {
         guard validateInputs() else { return }
+        
+        // 手動測試連線時，停止 UDP Discovery
+        stopDiscovery()
         
         saveSettings()
         
