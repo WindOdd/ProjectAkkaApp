@@ -18,18 +18,18 @@ class GameSessionViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     // MARK: - Dependencies
-    
+
     let speechService: SpeechRecognitionService
     let ttsService: TTSService
-    
+
     private let settingsStore: SettingsStore
     private let sessionManager: SessionManager
     private let historyManager: HistoryManager
     private let keywordManager: KeywordInjectionManager
     private var httpClient: HTTPClient?
-    
+
     private var feedbackTasks: [Task<Void, Never>] = []
-    
+
     init(
         settingsStore: SettingsStore,
         sessionManager: SessionManager,
@@ -41,7 +41,7 @@ class GameSessionViewModel: ObservableObject {
         self.historyManager = historyManager
         self.keywordManager = keywordManager
         self.speechService = SpeechRecognitionService(keywordManager: keywordManager)
-        self.ttsService = TTSService()
+        self.ttsService = TTSService.shared  // ✅ 使用已預熱的 shared 實例
         self.httpClient = HTTPClient(baseURL: settingsStore.baseURL)
     }
     

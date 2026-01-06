@@ -9,39 +9,46 @@ import Foundation
 import AVFoundation
 import Combine
 
+@MainActor
 class TTSService: NSObject, ObservableObject {
     /// 共享實例 (保持預熱狀態)
     static let shared = TTSService()
-    
+
     @Published var isSpeaking = false
     @Published var isWarmedUp = false
-    
+
     private var synthesizer: AVSpeechSynthesizer?
-    
+    private var warmUpContinuation: CheckedContinuation<Void, Never>?
+
     override init() {
         super.init()
         // 預先建立 synthesizer
         synthesizer = AVSpeechSynthesizer()
         synthesizer?.delegate = self
     }
-    
+
     // MARK: - Pre-warm (消除首次延遲)
-    
-    /// 預熱 TTS 引擎 - 播放「準備就緒」歡迎語
-    func preWarm() {
+
+    /// 預熱 TTS 引擎 - 播放「準備就緒」歡迎語（非阻塞）
+    func preWarm() async {
         guard !isWarmedUp else { return }
         isWarmedUp = true
-        
+
         print("🔊 TTS 預熱開始 - 播放啟動語音...")
-        
-        // 播放有聲的歡迎語來預熱 TTS 引擎
-        let warmUpUtterance = AVSpeechUtterance(string: "準備就緒")
-        warmUpUtterance.voice = AVSpeechSynthesisVoice(language: "zh-TW")
-        warmUpUtterance.rate = AVSpeechUtteranceDefaultSpeechRate
-        warmUpUtterance.volume = 1.0  // 正常音量
-        
-        isSpeaking = true
-        synthesizer?.speak(warmUpUtterance)
+
+        // 使用 continuation 等待播放完成
+        await withCheckedContinuation { continuation in
+            warmUpContinuation = continuation
+
+            // 播放有聲的歡迎語來預熱 TTS 引擎
+            let warmUpUtterance = AVSpeechUtterance(string: "準備就緒")
+            warmUpUtterance.voice = AVSpeechSynthesisVoice(language: "zh-TW")
+            warmUpUtterance.rate = AVSpeechUtteranceDefaultSpeechRate
+            warmUpUtterance.volume = 1.0  // 正常音量
+
+            isSpeaking = true
+            synthesizer?.speak(warmUpUtterance)
+        }
     }
     
     // MARK: - Speech Control
@@ -108,16 +115,28 @@ class TTSService: NSObject, ObservableObject {
 // MARK: - AVSpeechSynthesizerDelegate
 
 extension TTSService: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        DispatchQueue.main.async {
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        Task { @MainActor in
             self.isSpeaking = false
             print("🔊 TTS 朗讀完成")
+
+            // Resume continuation if this was the warm-up
+            if let continuation = self.warmUpContinuation {
+                self.warmUpContinuation = nil
+                continuation.resume()
+            }
         }
     }
-    
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        DispatchQueue.main.async {
+
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        Task { @MainActor in
             self.isSpeaking = false
+
+            // Resume continuation if cancelled during warm-up
+            if let continuation = self.warmUpContinuation {
+                self.warmUpContinuation = nil
+                continuation.resume()
+            }
         }
     }
 }

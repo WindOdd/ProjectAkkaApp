@@ -44,31 +44,26 @@ struct ContentView: View {
         .task {
             guard !hasInitialized else { return }
             hasInitialized = true
-            
+
             // 1. 檢查權限
             loadingMessage = "檢查權限中..."
             print("🚀 App 啟動：檢查權限...")
             permissionManager.checkAllPermissions()
-            
+
             if !permissionManager.allPermissionsGranted {
                 _ = await permissionManager.requestAllPermissions()
             }
-            
-            // 2. 預熱 TTS
+
+            // 2. 預熱 TTS (使用 async/await，非阻塞)
             loadingMessage = "語音引擎準備中..."
             print("🚀 App 啟動：預熱 TTS...")
-            TTSService.shared.preWarm()
-            
-            // 3. 等待 TTS 完成
-            while TTSService.shared.isSpeaking {
-                try? await Task.sleep(nanoseconds: 100_000_000)
-            }
-            
-            // 4. 系統就緒
+            await TTSService.shared.preWarm()
+
+            // 3. 系統就緒
             print("🚀 App 啟動完成！")
             isSystemReady = true
-            
-            // 5. 顯示權限缺失警告
+
+            // 4. 顯示權限缺失警告
             if !permissionManager.allPermissionsGranted {
                 showPermissionAlert = true
             }
