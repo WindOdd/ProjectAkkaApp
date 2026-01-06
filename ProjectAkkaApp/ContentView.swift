@@ -25,7 +25,7 @@ struct ContentView: View {
             Group {
                 if !settingsStore.hasValidServer {
                     // 首次啟動或無有效連線 -> 設定頁面
-                    SettingsView(settingsStore: settingsStore) {
+                    SettingsView(settingsStore: settingsStore, isSystemReady: isSystemReady) {
                         // 連線成功後不需額外處理
                     }
                 } else {
