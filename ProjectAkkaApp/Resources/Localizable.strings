@@ -1,0 +1,58 @@
+/* 
+  Localizable.strings
+  ProjectAkkaApp
+
+  繁體中文本地化字串
+*/
+
+// MARK: - 通用
+"app_name" = "阿卡";
+"ok" = "確定";
+"cancel" = "取消";
+"done" = "完成";
+"error" = "錯誤";
+"loading" = "載入中...";
+
+// MARK: - 設定頁面
+"settings" = "設定";
+"connection_settings" = "連線設定";
+"table_id" = "桌號";
+"server_ip" = "伺服器 IP";
+"server_port" = "埠號";
+"test_connection" = "測試連線";
+"testing" = "測試中...";
+"connection_success" = "連線成功！";
+"connection_failed" = "連線失敗";
+
+// MARK: - TTS 設定
+"tts_settings" = "語音朗讀設定";
+"voice_selection" = "語音選擇";
+"speaking_rate" = "語速";
+"preview" = "試聽";
+"stop" = "停止";
+
+// MARK: - 遊戲選單
+"select_game" = "選擇遊戲";
+"loading_games" = "載入遊戲中...";
+"no_games" = "沒有可用的遊戲";
+"voice_optimized" = "語音優化";
+
+// MARK: - 遊戲畫面
+"exit" = "離開";
+"start_speaking" = "按住下方按鈕開始說話";
+"recording" = "錄音中...";
+
+// MARK: - Loading 訊息
+"thinking" = "阿卡思考中...";
+"querying_rules" = "正在查詢規則，請稍候...";
+
+// MARK: - 錯誤訊息
+"connection_timeout" = "抱歉，連線逾時，請稍後再試";
+"server_not_found" = "找不到 Server，請聯繫服務人員";
+"invalid_ip" = "請輸入有效的 IP 位址";
+"invalid_port" = "請輸入有效的埠號 (1-65535)";
+
+// MARK: - 權限
+"permission_microphone" = "需要麥克風權限以進行語音輸入";
+"permission_speech" = "需要語音辨識權限以將您的語音轉換為文字";
+"permission_network" = "需要區域網路權限以連接桌遊助手伺服器";

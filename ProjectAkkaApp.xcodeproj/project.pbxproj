@@ -6,17 +6,93 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9956B1952F0CAFAC00132D15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9956B1912F0CAFAC00132D15 /* Assets.xcassets */; };
+		9956B1962F0CAFAC00132D15 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9956B16A2F0CAFAC00132D15 /* Localizable.strings */; };
+		9956B1972F0CAFAC00132D15 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B15D2F0CAFAC00132D15 /* HistoryManager.swift */; };
+		9956B1982F0CAFAC00132D15 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B18D2F0CAFAC00132D15 /* SettingsView.swift */; };
+		9956B1992F0CAFAC00132D15 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1622F0CAFAC00132D15 /* AppSettings.swift */; };
+		9956B19A2F0CAFAC00132D15 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1872F0CAFAC00132D15 /* LoadingOverlay.swift */; };
+		9956B19B2F0CAFAC00132D15 /* GameSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B17F2F0CAFAC00132D15 /* GameSessionViewModel.swift */; };
+		9956B19C2F0CAFAC00132D15 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1802F0CAFAC00132D15 /* SettingsViewModel.swift */; };
+		9956B19D2F0CAFAC00132D15 /* View+Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1792F0CAFAC00132D15 /* View+Loading.swift */; };
+		9956B19E2F0CAFAC00132D15 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1662F0CAFAC00132D15 /* Game.swift */; };
+		9956B19F2F0CAFAC00132D15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B15A2F0CAFAC00132D15 /* AppDelegate.swift */; };
+		9956B1A12F0CAFAC00132D15 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1882F0CAFAC00132D15 /* RecordButton.swift */; };
+		9956B1A22F0CAFAC00132D15 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B15E2F0CAFAC00132D15 /* PermissionManager.swift */; };
+		9956B1A32F0CAFAC00132D15 /* TTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1752F0CAFAC00132D15 /* TTSService.swift */; };
+		9956B1A42F0CAFAC00132D15 /* GameMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B18A2F0CAFAC00132D15 /* GameMenuView.swift */; };
+		9956B1A52F0CAFAC00132D15 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1602F0CAFAC00132D15 /* SettingsStore.swift */; };
+		9956B1A62F0CAFAC00132D15 /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B16E2F0CAFAC00132D15 /* APIEndpoints.swift */; };
+		9956B1A72F0CAFAC00132D15 /* ChatRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1642F0CAFAC00132D15 /* ChatRequest.swift */; };
+		9956B1A82F0CAFAC00132D15 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B15F2F0CAFAC00132D15 /* SessionManager.swift */; };
+		9956B1A92F0CAFAC00132D15 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B16F2F0CAFAC00132D15 /* HTTPClient.swift */; };
+		9956B1AA2F0CAFAC00132D15 /* StatusBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1842F0CAFAC00132D15 /* StatusBanner.swift */; };
+		9956B1AB2F0CAFAC00132D15 /* SpeechRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1732F0CAFAC00132D15 /* SpeechRecognitionService.swift */; };
+		9956B1AC2F0CAFAC00132D15 /* ChatResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1652F0CAFAC00132D15 /* ChatResponse.swift */; };
+		9956B1AD2F0CAFAC00132D15 /* KeywordsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1672F0CAFAC00132D15 /* KeywordsResponse.swift */; };
+		9956B1AE2F0CAFAC00132D15 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1922F0CAFAC00132D15 /* ContentView.swift */; };
+		9956B1AF2F0CAFAC00132D15 /* KeywordInjectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1722F0CAFAC00132D15 /* KeywordInjectionManager.swift */; };
+		9956B1B02F0CAFAC00132D15 /* CountdownIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1832F0CAFAC00132D15 /* CountdownIndicator.swift */; };
+		9956B1B12F0CAFAC00132D15 /* Publisher+Timeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1782F0CAFAC00132D15 /* Publisher+Timeout.swift */; };
+		9956B1B22F0CAFAC00132D15 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1632F0CAFAC00132D15 /* ChatMessage.swift */; };
+		9956B1B32F0CAFAC00132D15 /* TTSSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1812F0CAFAC00132D15 /* TTSSettingsViewModel.swift */; };
+		9956B1B42F0CAFAC00132D15 /* ServerDiscoveryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1682F0CAFAC00132D15 /* ServerDiscoveryResponse.swift */; };
+		9956B1B52F0CAFAC00132D15 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B17C2F0CAFAC00132D15 /* SoundPlayer.swift */; };
+		9956B1B62F0CAFAC00132D15 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1702F0CAFAC00132D15 /* NetworkError.swift */; };
+		9956B1B72F0CAFAC00132D15 /* UDPDiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B16C2F0CAFAC00132D15 /* UDPDiscoveryService.swift */; };
+		9956B1B82F0CAFAC00132D15 /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B18C2F0CAFAC00132D15 /* ConnectionSettingsView.swift */; };
+		9956B1B92F0CAFAC00132D15 /* GameMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B17E2F0CAFAC00132D15 /* GameMenuViewModel.swift */; };
+		9956B1BA2F0CAFAC00132D15 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B17B2F0CAFAC00132D15 /* Constants.swift */; };
+		9956B1BB2F0CAFAC00132D15 /* GameSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B1862F0CAFAC00132D15 /* GameSessionView.swift */; };
+		9956B1BC2F0CAFAC00132D15 /* TTSSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B18E2F0CAFAC00132D15 /* TTSSettingsView.swift */; };
+		9956B1BD2F0CAFAC00132D15 /* ProjectAkkaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B15B2F0CAFAC00132D15 /* ProjectAkkaApp.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		991267E12F0CA87300DC322C /* ProjectAkkaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectAkkaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9956B15A2F0CAFAC00132D15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9956B15B2F0CAFAC00132D15 /* ProjectAkkaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectAkkaApp.swift; sourceTree = "<group>"; };
+		9956B15D2F0CAFAC00132D15 /* HistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
+		9956B15E2F0CAFAC00132D15 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
+		9956B15F2F0CAFAC00132D15 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		9956B1602F0CAFAC00132D15 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		9956B1622F0CAFAC00132D15 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		9956B1632F0CAFAC00132D15 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		9956B1642F0CAFAC00132D15 /* ChatRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRequest.swift; sourceTree = "<group>"; };
+		9956B1652F0CAFAC00132D15 /* ChatResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatResponse.swift; sourceTree = "<group>"; };
+		9956B1662F0CAFAC00132D15 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		9956B1672F0CAFAC00132D15 /* KeywordsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordsResponse.swift; sourceTree = "<group>"; };
+		9956B1682F0CAFAC00132D15 /* ServerDiscoveryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerDiscoveryResponse.swift; sourceTree = "<group>"; };
+		9956B16A2F0CAFAC00132D15 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		9956B16C2F0CAFAC00132D15 /* UDPDiscoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPDiscoveryService.swift; sourceTree = "<group>"; };
+		9956B16E2F0CAFAC00132D15 /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
+		9956B16F2F0CAFAC00132D15 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		9956B1702F0CAFAC00132D15 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		9956B1722F0CAFAC00132D15 /* KeywordInjectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordInjectionManager.swift; sourceTree = "<group>"; };
+		9956B1732F0CAFAC00132D15 /* SpeechRecognitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionService.swift; sourceTree = "<group>"; };
+		9956B1752F0CAFAC00132D15 /* TTSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSService.swift; sourceTree = "<group>"; };
+		9956B1782F0CAFAC00132D15 /* Publisher+Timeout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Timeout.swift"; sourceTree = "<group>"; };
+		9956B1792F0CAFAC00132D15 /* View+Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Loading.swift"; sourceTree = "<group>"; };
+		9956B17B2F0CAFAC00132D15 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		9956B17C2F0CAFAC00132D15 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		9956B17E2F0CAFAC00132D15 /* GameMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenuViewModel.swift; sourceTree = "<group>"; };
+		9956B17F2F0CAFAC00132D15 /* GameSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSessionViewModel.swift; sourceTree = "<group>"; };
+		9956B1802F0CAFAC00132D15 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		9956B1812F0CAFAC00132D15 /* TTSSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSSettingsViewModel.swift; sourceTree = "<group>"; };
+		9956B1832F0CAFAC00132D15 /* CountdownIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownIndicator.swift; sourceTree = "<group>"; };
+		9956B1842F0CAFAC00132D15 /* StatusBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBanner.swift; sourceTree = "<group>"; };
+		9956B1862F0CAFAC00132D15 /* GameSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSessionView.swift; sourceTree = "<group>"; };
+		9956B1872F0CAFAC00132D15 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
+		9956B1882F0CAFAC00132D15 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
+		9956B18A2F0CAFAC00132D15 /* GameMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenuView.swift; sourceTree = "<group>"; };
+		9956B18C2F0CAFAC00132D15 /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
+		9956B18D2F0CAFAC00132D15 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9956B18E2F0CAFAC00132D15 /* TTSSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSSettingsView.swift; sourceTree = "<group>"; };
+		9956B1912F0CAFAC00132D15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9956B1922F0CAFAC00132D15 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9956B1BE2F0CB0A100132D15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		991267E32F0CA87300DC322C /* ProjectAkkaApp */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ProjectAkkaApp;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		991267DE2F0CA87300DC322C /* Frameworks */ = {
@@ -32,7 +108,7 @@
 		991267D82F0CA87300DC322C = {
 			isa = PBXGroup;
 			children = (
-				991267E32F0CA87300DC322C /* ProjectAkkaApp */,
+				9956B1942F0CAFAC00132D15 /* ProjectAkkaApp */,
 				991267E22F0CA87300DC322C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +119,190 @@
 				991267E12F0CA87300DC322C /* ProjectAkkaApp.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9956B15C2F0CAFAC00132D15 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9956B15A2F0CAFAC00132D15 /* AppDelegate.swift */,
+				9956B15B2F0CAFAC00132D15 /* ProjectAkkaApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		9956B1612F0CAFAC00132D15 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				9956B15D2F0CAFAC00132D15 /* HistoryManager.swift */,
+				9956B15E2F0CAFAC00132D15 /* PermissionManager.swift */,
+				9956B15F2F0CAFAC00132D15 /* SessionManager.swift */,
+				9956B1602F0CAFAC00132D15 /* SettingsStore.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		9956B1692F0CAFAC00132D15 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1622F0CAFAC00132D15 /* AppSettings.swift */,
+				9956B1632F0CAFAC00132D15 /* ChatMessage.swift */,
+				9956B1642F0CAFAC00132D15 /* ChatRequest.swift */,
+				9956B1652F0CAFAC00132D15 /* ChatResponse.swift */,
+				9956B1662F0CAFAC00132D15 /* Game.swift */,
+				9956B1672F0CAFAC00132D15 /* KeywordsResponse.swift */,
+				9956B1682F0CAFAC00132D15 /* ServerDiscoveryResponse.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9956B16B2F0CAFAC00132D15 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9956B16A2F0CAFAC00132D15 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		9956B16D2F0CAFAC00132D15 /* Discovery */ = {
+			isa = PBXGroup;
+			children = (
+				9956B16C2F0CAFAC00132D15 /* UDPDiscoveryService.swift */,
+			);
+			path = Discovery;
+			sourceTree = "<group>";
+		};
+		9956B1712F0CAFAC00132D15 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				9956B16E2F0CAFAC00132D15 /* APIEndpoints.swift */,
+				9956B16F2F0CAFAC00132D15 /* HTTPClient.swift */,
+				9956B1702F0CAFAC00132D15 /* NetworkError.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		9956B1742F0CAFAC00132D15 /* Speech */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1722F0CAFAC00132D15 /* KeywordInjectionManager.swift */,
+				9956B1732F0CAFAC00132D15 /* SpeechRecognitionService.swift */,
+			);
+			path = Speech;
+			sourceTree = "<group>";
+		};
+		9956B1762F0CAFAC00132D15 /* TTS */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1752F0CAFAC00132D15 /* TTSService.swift */,
+			);
+			path = TTS;
+			sourceTree = "<group>";
+		};
+		9956B1772F0CAFAC00132D15 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9956B16D2F0CAFAC00132D15 /* Discovery */,
+				9956B1712F0CAFAC00132D15 /* Network */,
+				9956B1742F0CAFAC00132D15 /* Speech */,
+				9956B1762F0CAFAC00132D15 /* TTS */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		9956B17A2F0CAFAC00132D15 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1782F0CAFAC00132D15 /* Publisher+Timeout.swift */,
+				9956B1792F0CAFAC00132D15 /* View+Loading.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		9956B17D2F0CAFAC00132D15 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				9956B17A2F0CAFAC00132D15 /* Extensions */,
+				9956B17B2F0CAFAC00132D15 /* Constants.swift */,
+				9956B17C2F0CAFAC00132D15 /* SoundPlayer.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		9956B1822F0CAFAC00132D15 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				9956B17E2F0CAFAC00132D15 /* GameMenuViewModel.swift */,
+				9956B17F2F0CAFAC00132D15 /* GameSessionViewModel.swift */,
+				9956B1802F0CAFAC00132D15 /* SettingsViewModel.swift */,
+				9956B1812F0CAFAC00132D15 /* TTSSettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		9956B1852F0CAFAC00132D15 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1832F0CAFAC00132D15 /* CountdownIndicator.swift */,
+				9956B1842F0CAFAC00132D15 /* StatusBanner.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		9956B1892F0CAFAC00132D15 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1862F0CAFAC00132D15 /* GameSessionView.swift */,
+				9956B1872F0CAFAC00132D15 /* LoadingOverlay.swift */,
+				9956B1882F0CAFAC00132D15 /* RecordButton.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		9956B18B2F0CAFAC00132D15 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				9956B18A2F0CAFAC00132D15 /* GameMenuView.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		9956B18F2F0CAFAC00132D15 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				9956B18C2F0CAFAC00132D15 /* ConnectionSettingsView.swift */,
+				9956B18D2F0CAFAC00132D15 /* SettingsView.swift */,
+				9956B18E2F0CAFAC00132D15 /* TTSSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		9956B1902F0CAFAC00132D15 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1852F0CAFAC00132D15 /* Components */,
+				9956B1892F0CAFAC00132D15 /* Game */,
+				9956B18B2F0CAFAC00132D15 /* Menu */,
+				9956B18F2F0CAFAC00132D15 /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9956B1942F0CAFAC00132D15 /* ProjectAkkaApp */ = {
+			isa = PBXGroup;
+			children = (
+				9956B1BE2F0CB0A100132D15 /* Info.plist */,
+				9956B15C2F0CAFAC00132D15 /* App */,
+				9956B1612F0CAFAC00132D15 /* Managers */,
+				9956B1692F0CAFAC00132D15 /* Models */,
+				9956B16B2F0CAFAC00132D15 /* Resources */,
+				9956B1772F0CAFAC00132D15 /* Services */,
+				9956B17D2F0CAFAC00132D15 /* Utilities */,
+				9956B1822F0CAFAC00132D15 /* ViewModels */,
+				9956B1902F0CAFAC00132D15 /* Views */,
+				9956B1912F0CAFAC00132D15 /* Assets.xcassets */,
+				9956B1922F0CAFAC00132D15 /* ContentView.swift */,
+			);
+			path = ProjectAkkaApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,9 +319,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				991267E32F0CA87300DC322C /* ProjectAkkaApp */,
 			);
 			name = ProjectAkkaApp;
 			packageProductDependencies = (
@@ -109,6 +366,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9956B1952F0CAFAC00132D15 /* Assets.xcassets in Resources */,
+				9956B1962F0CAFAC00132D15 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +378,44 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9956B1972F0CAFAC00132D15 /* HistoryManager.swift in Sources */,
+				9956B1982F0CAFAC00132D15 /* SettingsView.swift in Sources */,
+				9956B1992F0CAFAC00132D15 /* AppSettings.swift in Sources */,
+				9956B19A2F0CAFAC00132D15 /* LoadingOverlay.swift in Sources */,
+				9956B19B2F0CAFAC00132D15 /* GameSessionViewModel.swift in Sources */,
+				9956B19C2F0CAFAC00132D15 /* SettingsViewModel.swift in Sources */,
+				9956B19D2F0CAFAC00132D15 /* View+Loading.swift in Sources */,
+				9956B19E2F0CAFAC00132D15 /* Game.swift in Sources */,
+				9956B19F2F0CAFAC00132D15 /* AppDelegate.swift in Sources */,
+				9956B1A12F0CAFAC00132D15 /* RecordButton.swift in Sources */,
+				9956B1A22F0CAFAC00132D15 /* PermissionManager.swift in Sources */,
+				9956B1A32F0CAFAC00132D15 /* TTSService.swift in Sources */,
+				9956B1A42F0CAFAC00132D15 /* GameMenuView.swift in Sources */,
+				9956B1A52F0CAFAC00132D15 /* SettingsStore.swift in Sources */,
+				9956B1A62F0CAFAC00132D15 /* APIEndpoints.swift in Sources */,
+				9956B1A72F0CAFAC00132D15 /* ChatRequest.swift in Sources */,
+				9956B1A82F0CAFAC00132D15 /* SessionManager.swift in Sources */,
+				9956B1A92F0CAFAC00132D15 /* HTTPClient.swift in Sources */,
+				9956B1AA2F0CAFAC00132D15 /* StatusBanner.swift in Sources */,
+				9956B1AB2F0CAFAC00132D15 /* SpeechRecognitionService.swift in Sources */,
+				9956B1AC2F0CAFAC00132D15 /* ChatResponse.swift in Sources */,
+				9956B1AD2F0CAFAC00132D15 /* KeywordsResponse.swift in Sources */,
+				9956B1AE2F0CAFAC00132D15 /* ContentView.swift in Sources */,
+				9956B1AF2F0CAFAC00132D15 /* KeywordInjectionManager.swift in Sources */,
+				9956B1B02F0CAFAC00132D15 /* CountdownIndicator.swift in Sources */,
+				9956B1B12F0CAFAC00132D15 /* Publisher+Timeout.swift in Sources */,
+				9956B1B22F0CAFAC00132D15 /* ChatMessage.swift in Sources */,
+				9956B1B32F0CAFAC00132D15 /* TTSSettingsViewModel.swift in Sources */,
+				9956B1B42F0CAFAC00132D15 /* ServerDiscoveryResponse.swift in Sources */,
+				9956B1B52F0CAFAC00132D15 /* SoundPlayer.swift in Sources */,
+				9956B1B62F0CAFAC00132D15 /* NetworkError.swift in Sources */,
+				9956B1B72F0CAFAC00132D15 /* UDPDiscoveryService.swift in Sources */,
+				9956B1B82F0CAFAC00132D15 /* ConnectionSettingsView.swift in Sources */,
+				9956B1B92F0CAFAC00132D15 /* GameMenuViewModel.swift in Sources */,
+				9956B1BA2F0CAFAC00132D15 /* Constants.swift in Sources */,
+				9956B1BB2F0CAFAC00132D15 /* GameSessionView.swift in Sources */,
+				9956B1BC2F0CAFAC00132D15 /* TTSSettingsView.swift in Sources */,
+				9956B1BD2F0CAFAC00132D15 /* ProjectAkkaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,11 +553,17 @@
 				DEVELOPMENT_TEAM = U2L7ZJ7SL7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ProjectAkkaApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "需要區域網路權限以連接桌遊助手伺服器";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "需要麥克風權限以進行語音輸入";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "需要語音辨識權限以將語音轉換為文字";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -288,11 +591,17 @@
 				DEVELOPMENT_TEAM = U2L7ZJ7SL7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ProjectAkkaApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "需要區域網路權限以連接桌遊助手伺服器";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "需要麥克風權限以進行語音輸入";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "需要語音辨識權限以將語音轉換為文字";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
