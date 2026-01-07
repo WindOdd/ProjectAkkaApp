@@ -54,6 +54,7 @@ class SettingsViewModel: ObservableObject {
         settingsStore.settings.tableId = tableId
         settingsStore.settings.serverIP = serverIP
         settingsStore.settings.serverPort = Int(serverPort) ?? Constants.defaultHTTPPort
+        settingsStore.save()
     }
     
     func resetSettings() {
@@ -67,7 +68,6 @@ class SettingsViewModel: ObservableObject {
         // 監聽發現的 Server
         udpDiscoveryService.$discoveredServer
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] response in
                 self?.serverIP = response.ip
                 self?.serverPort = String(response.port)
@@ -75,15 +75,13 @@ class SettingsViewModel: ObservableObject {
                 self?.saveSettings()
             }
             .store(in: &cancellables)
-        
+
         // 監聽搜尋狀態
         udpDiscoveryService.$isSearching
-            .receive(on: DispatchQueue.main)
             .assign(to: &$isDiscovering)
-        
+
         // 監聯狀態訊息
         udpDiscoveryService.$statusMessage
-            .receive(on: DispatchQueue.main)
             .assign(to: &$discoveryStatus)
     }
     
