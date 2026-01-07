@@ -210,7 +210,7 @@ class UDPDiscoveryService: ObservableObject {
 
         dispatchQueue.async { [weak self] in
             guard let self = self else { return }
-            var buffer = [UInt8](repeating: 0, count: 2048)
+            var buffer = [UInt8](repeating: 0, count: Constants.UDPDiscovery.receiveBufferSize)
 
             while self.isSearching && self.socketFD >= 0 {
                 let receivedBytes = recvfrom(self.socketFD, &buffer, buffer.count, 0, nil, nil)
@@ -252,18 +252,6 @@ class UDPDiscoveryService: ObservableObject {
         }
     }
 
-    private func parseServerResponse(json: String) {
-        // 嘗試將字串轉為 Data 再解析
-        if let data = json.data(using: .utf8),
-           let response = try? JSONDecoder().decode(ServerDiscoveryResponse.self, from: data) {
-            Task { @MainActor in
-                self.discoveredServer = response
-                self.statusMessage = "✅ 已連線至阿卡核心"
-                self.stopDiscovery()
-            }
-        }
-    }
-
     // MARK: - Network Interface Helper
 
     /// 智慧尋找正確的廣播位址 (計算子網廣播地址)
@@ -278,8 +266,8 @@ class UDPDiscoveryService: ObservableObject {
         print("🔍 掃描網路介面...")
 
         var ptr = ifaddr
-        while ptr != nil {
-            let interface = ptr!.pointee
+        while let currentPtr = ptr {
+            let interface = currentPtr.pointee
             let name = String(cString: interface.ifa_name)
 
             // 1. 必須是 IPv4

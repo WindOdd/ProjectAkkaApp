@@ -128,7 +128,7 @@ struct ContentView: View {
             connection.start(queue: .global())
 
             // Timeout 兜底：等待足夠時間讓系統彈出權限對話框
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.Timeout.localNetworkPermission) {
                 if !hasResumed {
                     hasResumed = true
                     connection.cancel()
