@@ -31,16 +31,20 @@ class SpeechRecognitionService: ObservableObject {
     }
 
     deinit {
-        // 確保所有資源被正確釋放
-        if isRecording {
-            stopRecording()
-        }
-        stopTimer()
+        // 清理非 MainActor 隔離的資源
+        // 注意: deinit 是 nonisolated 的，無法訪問 @MainActor 隔離的屬性/方法
 
-        // 確保 audio engine 完全停止
+        // 停止 Timer
+        timer?.invalidate()
+
+        // 停止 Audio Engine
         if audioEngine.isRunning {
             audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
         }
+
+        // 取消 Recognition Task
+        recognitionTask?.cancel()
 
         print("🎤 SpeechRecognitionService 已釋放")
     }
