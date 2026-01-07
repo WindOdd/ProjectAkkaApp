@@ -41,6 +41,7 @@ class TTSSettingsViewModel: ObservableObject {
         guard !isInitializing else { return }
         settingsStore.settings.ttsVoiceIdentifier = selectedVoiceId
         settingsStore.settings.ttsSpeakingRate = speakingRate
+        settingsStore.save()
         print("💾 TTS 設定已儲存 - 語速: \(speakingRate)")
     }
     

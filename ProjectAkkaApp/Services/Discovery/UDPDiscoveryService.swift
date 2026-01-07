@@ -121,7 +121,7 @@ class UDPDiscoveryService: ObservableObject {
 
         if currentCycle >= maxCycles {
             print("⚠️ UDP 搜尋徹底失敗 (10輪結束)")
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.stopDiscovery()
                 self.statusMessage = "找不到主機，請手動設定 IP"
                 self.errorMessage = "找不到 Server，請聯繫服務人員"
@@ -233,7 +233,7 @@ class UDPDiscoveryService: ObservableObject {
                     // 嘗試解析 JSON
                     if let response = try? JSONDecoder().decode(ServerDiscoveryResponse.self, from: data) {
                         print("✅ 發現 Server: \(response.ip):\(response.port)")
-                        DispatchQueue.main.async {
+                        Task { @MainActor in
                             self.discoveredServer = response
                             self.statusMessage = "✅ 已連線至阿卡核心"
                             self.stopDiscovery()
@@ -256,7 +256,7 @@ class UDPDiscoveryService: ObservableObject {
         // 嘗試將字串轉為 Data 再解析
         if let data = json.data(using: .utf8),
            let response = try? JSONDecoder().decode(ServerDiscoveryResponse.self, from: data) {
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.discoveredServer = response
                 self.statusMessage = "✅ 已連線至阿卡核心"
                 self.stopDiscovery()
