@@ -93,7 +93,23 @@ struct ContentView: View {
     /// iOS 會在首次網路連線時彈出權限提示，這裡主動觸發
     private func triggerLocalNetworkPermission() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            var hasResumed = false
+            // 使用 Sendable 的狀態類來管理並發訪問
+            final class ResumeState: @unchecked Sendable {
+                private var _hasResumed = false
+                private let lock = NSLock()
+
+                func checkAndSet() -> Bool {
+                    lock.lock()
+                    defer { lock.unlock() }
+                    if _hasResumed {
+                        return true
+                    }
+                    _hasResumed = true
+                    return false
+                }
+            }
+
+            let resumeState = ResumeState()
 
             // 發送一個 UDP 廣播來觸發 Local Network 權限
             let connection = NWConnection(
@@ -112,8 +128,7 @@ struct ContentView: View {
                     })
                 case .failed, .cancelled:
                     // 失敗或取消時立即 resume
-                    if !hasResumed {
-                        hasResumed = true
+                    if !resumeState.checkAndSet() {
                         connection.cancel()
                         print("🌐 Local Network 權限觸發失敗或取消")
                         DispatchQueue.main.async {
@@ -129,8 +144,7 @@ struct ContentView: View {
 
             // Timeout 兜底：等待足夠時間讓系統彈出權限對話框
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.Timeout.localNetworkPermission) {
-                if !hasResumed {
-                    hasResumed = true
+                if !resumeState.checkAndSet() {
                     connection.cancel()
                     print("🌐 Local Network 權限觸發完成")
                     continuation.resume()

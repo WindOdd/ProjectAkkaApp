@@ -20,7 +20,8 @@ class UDPDiscoveryService: ObservableObject {
     @Published var errorMessage: String?
 
     // MARK: - Internal Properties
-    private var socketFD: Int32 = -1
+    nonisolated(unsafe) private var socketFD: Int32 = -1
+    nonisolated(unsafe) private var _isSearching: Bool = false
     private let dispatchQueue = DispatchQueue(label: "com.akka.udp.bsd", qos: .userInitiated)
 
     // 參數設定 (從 Constants 讀取)
@@ -44,7 +45,8 @@ class UDPDiscoveryService: ObservableObject {
 
         // 同步設定狀態 (修正競態條件)
         discoveredServer = nil
-        isSearching = true  // 必須同步設定，否則接收迴圈會立即退出
+        isSearching = true
+        _isSearching = true  // 同步更新後台線程使用的標誌
         currentCycle = 0
         currentRetry = 0
         currentRound = 0
@@ -59,6 +61,7 @@ class UDPDiscoveryService: ObservableObject {
         } else {
             print("❌ Socket 設定失敗")
             isSearching = false
+            _isSearching = false
             statusMessage = "Socket 初始化失敗"
             errorMessage = "無法初始化 UDP Socket"
         }
@@ -67,6 +70,7 @@ class UDPDiscoveryService: ObservableObject {
     func stopDiscovery() {
         // 同步設定狀態 (修正競態條件)
         isSearching = false
+        _isSearching = false  // 同步更新後台線程使用的標誌
 
         pendingTask?.cancel()
         pendingTask = nil
@@ -212,7 +216,7 @@ class UDPDiscoveryService: ObservableObject {
             guard let self = self else { return }
             var buffer = [UInt8](repeating: 0, count: Constants.UDPDiscovery.receiveBufferSize)
 
-            while self.isSearching && self.socketFD >= 0 {
+            while self._isSearching && self.socketFD >= 0 {
                 let receivedBytes = recvfrom(self.socketFD, &buffer, buffer.count, 0, nil, nil)
 
                 if receivedBytes > 0 {
@@ -230,8 +234,8 @@ class UDPDiscoveryService: ObservableObject {
                         }
                     }
 
-                    // 嘗試解析 JSON
-                    if let response = try? JSONDecoder().decode(ServerDiscoveryResponse.self, from: data) {
+                    // 嘗試解析 JSON (在後台線程安全地解碼)
+                    if let response = self.decodeServerResponse(from: data) {
                         print("✅ 發現 Server: \(response.ip):\(response.port)")
                         Task { @MainActor in
                             self.discoveredServer = response
@@ -250,6 +254,13 @@ class UDPDiscoveryService: ObservableObject {
 
             print("👂 停止監聽 UDP")
         }
+    }
+
+    // MARK: - Helper Functions
+
+    /// 在非隔離上下文中解碼 ServerDiscoveryResponse
+    nonisolated private func decodeServerResponse(from data: Data) -> ServerDiscoveryResponse? {
+        try? JSONDecoder().decode(ServerDiscoveryResponse.self, from: data)
     }
 
     // MARK: - Network Interface Helper
