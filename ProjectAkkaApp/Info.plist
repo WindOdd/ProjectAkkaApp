@@ -6,5 +6,17 @@
 	<array>
 		<string>_akka._udp</string>
 	</array>
+
+	<!-- App Transport Security 設定 - 允許 HTTP 連線 -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<!-- 允許所有 HTTP 連線（適用於私有網路環境）-->
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+
+		<!-- 允許局域網連線（與上面的設定重複，但保留以確保兼容性）-->
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
