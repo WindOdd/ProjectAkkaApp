@@ -15,10 +15,10 @@ struct ChatRequest: Codable {
     let history: [ChatMessage]
     
     struct GameContext: Codable {
-        let gameName: String
+        let gameId: String  // 使用 game_id 作為唯一識別
         
         enum CodingKeys: String, CodingKey {
-            case gameName = "game_name"
+            case gameId = "game_id"
         }
     }
     

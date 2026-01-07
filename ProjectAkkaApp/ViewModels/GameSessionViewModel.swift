@@ -12,6 +12,7 @@ import Combine
 class GameSessionViewModel: ObservableObject {
     // MARK: - Published Properties
     
+    @Published var userQuestion = ""      // 顯示用戶問的問題
     @Published var responseText = ""
     @Published var isLoading = false
     @Published var loadingMessage = ""
@@ -24,11 +25,12 @@ class GameSessionViewModel: ObservableObject {
 
     private let settingsStore: SettingsStore
     private let sessionManager: SessionManager
-    private let historyManager: HistoryManager
+    let historyManager: HistoryManager  // 公開給 View 訪問顯示對話歷史
     private let keywordManager: KeywordInjectionManager
     private var httpClient: HTTPClient?
 
     private var feedbackTasks: [Task<Void, Never>] = []
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         settingsStore: SettingsStore,
@@ -43,12 +45,31 @@ class GameSessionViewModel: ObservableObject {
         self.speechService = SpeechRecognitionService(keywordManager: keywordManager)
         self.ttsService = TTSService.shared  // ✅ 使用已預熱的 shared 實例
         self.httpClient = HTTPClient(baseURL: settingsStore.baseURL)
+        
+        // 🔑 轉發 speechService 的狀態變化到 ViewModel
+        speechService.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+        
+        // 🔑 轉發 historyManager 的狀態變化到 ViewModel
+        historyManager.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Game Entry Flow
     
     /// 進入遊戲時的初始化流程
     func enterGame(_ game: Game) async {
+        // Step 0: 啟動 Session
+        sessionManager.startSession(game: game)
+        
         // Step A: 重置關鍵字
         keywordManager.reset()
         
@@ -105,10 +126,13 @@ class GameSessionViewModel: ObservableObject {
     
     func sendMessage(_ text: String) async {
         guard let sessionId = sessionManager.sessionId,
-              let gameName = sessionManager.currentGame?.name else {
+              let gameId = sessionManager.currentGame?.id else {
             errorMessage = "Session 無效"
             return
         }
+        
+        // 顯示用戶問題
+        userQuestion = text
         
         // 開始 Loading
         isLoading = true
@@ -138,7 +162,7 @@ class GameSessionViewModel: ObservableObject {
         let request = ChatRequest(
             tableId: settingsStore.settings.tableId,
             sessionId: sessionId,
-            gameContext: ChatRequest.GameContext(gameName: gameName),
+            gameContext: ChatRequest.GameContext(gameId: gameId),
             userInput: text,
             history: historyManager.messages
         )

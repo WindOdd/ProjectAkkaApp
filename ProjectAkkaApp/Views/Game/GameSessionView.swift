@@ -91,39 +91,66 @@ struct GameSessionView: View {
     // MARK: - Response Area
     
     private var responseArea: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                if viewModel.responseText.isEmpty {
-                    // 空狀態提示
-                    VStack(spacing: 20) {
-                        Image(systemName: "bubble.left.and.bubble.right")
-                            .font(.system(size: 60))
-                            .foregroundColor(.blue.opacity(0.5))
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    if viewModel.historyManager.isEmpty && viewModel.userQuestion.isEmpty {
+                        // 空狀態提示
+                        VStack(spacing: 20) {
+                            Image(systemName: "bubble.left.and.bubble.right")
+                                .font(.system(size: 60))
+                                .foregroundColor(.blue.opacity(0.5))
+                            
+                            Text("按住下方按鈕開始說話")
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 100)
+                    } else {
+                        // 顯示最近 4 輪對話歷史
+                        ForEach(viewModel.historyManager.recentMessages) { message in
+                            ChatBubble(message: message)
+                        }
                         
-                        Text("按住下方按鈕開始說話")
-                            .foregroundColor(.secondary)
+                        // 顯示當前正在處理的問題（尚未加入 history）
+                        if !viewModel.userQuestion.isEmpty && 
+                           !viewModel.historyManager.messages.contains(where: { $0.content == viewModel.userQuestion }) {
+                            ChatBubble(message: ChatMessage(role: "user", content: viewModel.userQuestion))
+                        }
+                        
+                        // 顯示正在等待的回應
+                        if viewModel.isLoading {
+                            HStack {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                                Text(viewModel.loadingMessage)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 100)
-                } else {
-                    // AI 回應
-                    Text(viewModel.responseText)
-                        .font(.body)
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(12)
+                    
+                    // 錯誤訊息
+                    if let error = viewModel.errorMessage {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                    
+                    // 底部錨點用於自動滾動
+                    Color.clear
+                        .frame(height: 1)
+                        .id("bottom")
                 }
-                
-                // 錯誤訊息
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .padding()
+                .padding()
+            }
+            .onChange(of: viewModel.historyManager.messages.count) { _ in
+                withAnimation {
+                    proxy.scrollTo("bottom", anchor: .bottom)
                 }
             }
-            .padding()
         }
     }
     

@@ -52,6 +52,12 @@ class SpeechRecognitionService: ObservableObject {
     // MARK: - Recording Control
     
     func startRecording() throws {
+        // 🔑 防止重複錄音
+        guard !isRecording else {
+            print("⚠️ 已在錄音中，忽略重複啟動")
+            return
+        }
+        
         guard let recognizer = recognizer, recognizer.isAvailable else {
             throw SpeechError.recognizerNotAvailable
         }
@@ -84,6 +90,9 @@ class SpeechRecognitionService: ObservableObject {
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
         
+        // 🔑 移除現有的 tap (防止重複 installTap 導致崩潰)
+        inputNode.removeTap(onBus: 0)
+        
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
             request.append(buffer)
         }
@@ -114,6 +123,9 @@ class SpeechRecognitionService: ObservableObject {
     }
     
     func stopRecording() {
+        // 🔑 防止重複停止
+        guard isRecording else { return }
+        
         stopTimer()
         
         audioEngine.stop()

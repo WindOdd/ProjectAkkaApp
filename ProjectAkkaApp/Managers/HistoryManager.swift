@@ -70,4 +70,14 @@ class HistoryManager: ObservableObject {
     var isProperlyPaired: Bool {
         messages.count % 2 == 0
     }
+    
+    /// 取得最近 4 輪對話 (用於 UI 顯示)
+    var recentMessages: [ChatMessage] {
+        let maxDisplayRounds = 4
+        let maxDisplayMessages = maxDisplayRounds * 2
+        if messages.count <= maxDisplayMessages {
+            return messages
+        }
+        return Array(messages.suffix(maxDisplayMessages))
+    }
 }
