@@ -24,8 +24,8 @@ class SettingsStore: ObservableObject {
     }
     
     // MARK: - Persistence
-    
-    private func save() {
+
+    func save() {
         if let data = try? JSONEncoder().encode(settings) {
             UserDefaults.standard.set(data, forKey: key)
         }
