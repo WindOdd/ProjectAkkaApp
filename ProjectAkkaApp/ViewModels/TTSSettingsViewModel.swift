@@ -11,17 +11,23 @@ import Combine
 @MainActor
 class TTSSettingsViewModel: ObservableObject {
     @Published var availableVoices: [VoiceInfo] = []
-    @Published var selectedVoiceId: String = ""
-    @Published var speakingRate: Float = 0.5
+    @Published var selectedVoiceId: String = "" {
+        didSet { saveSettings() }
+    }
+    @Published var speakingRate: Float = 0.5 {
+        didSet { saveSettings() }
+    }
     @Published var isPlaying = false
     
     private let settingsStore: SettingsStore
     private let ttsService = TTSService.shared
+    private var isInitializing = true  // 防止初始化時觸發儲存
     
     init(settingsStore: SettingsStore) {
         self.settingsStore = settingsStore
         loadSettings()
         loadVoices()
+        isInitializing = false
     }
     
     // MARK: - Load / Save
@@ -32,8 +38,11 @@ class TTSSettingsViewModel: ObservableObject {
     }
     
     func saveSettings() {
+        guard !isInitializing else { return }
         settingsStore.settings.ttsVoiceIdentifier = selectedVoiceId
         settingsStore.settings.ttsSpeakingRate = speakingRate
+        settingsStore.save()
+        print("💾 TTS 設定已儲存 - 語速: \(speakingRate)")
     }
     
     // MARK: - Voice List
@@ -57,6 +66,7 @@ class TTSSettingsViewModel: ObservableObject {
             isPlaying = false
         } else {
             isPlaying = true
+            print("🎚️ 試聽語速: \(speakingRate)")
             ttsService.speak(
                 text: "您好，我是阿卡，您的桌遊助手。",
                 voiceIdentifier: selectedVoiceId,

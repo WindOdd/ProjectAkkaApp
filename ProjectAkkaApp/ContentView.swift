@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import Network
 
 struct ContentView: View {
     @EnvironmentObject var settingsStore: SettingsStore
@@ -24,7 +25,7 @@ struct ContentView: View {
             Group {
                 if !settingsStore.hasValidServer {
                     // 首次啟動或無有效連線 -> 設定頁面
-                    SettingsView(settingsStore: settingsStore) {
+                    SettingsView(settingsStore: settingsStore, isSystemReady: isSystemReady) {
                         // 連線成功後不需額外處理
                     }
                 } else {
@@ -34,9 +35,6 @@ struct ContentView: View {
             }
             .disabled(!isSystemReady)  // 未就緒時禁用互動
             .blur(radius: isSystemReady ? 0 : 3)  // 模糊效果
-
-            // 隱藏的 TextField 用於預熱鍵盤
-            KeyboardPreWarmer()
 
             // 啟動 Loading 遮罩
             if !isSystemReady {
@@ -63,10 +61,10 @@ struct ContentView: View {
             print("🚀 App 啟動：預熱 TTS...")
             await TTSService.shared.preWarm()
 
-            // 3. 預熱鍵盤（消除首次點擊延遲）
-            loadingMessage = "系統初始化中..."
-            print("🚀 App 啟動：預熱鍵盤...")
-            await preWarmKeyboard()
+            // 3. 觸發 Local Network 權限 (會彈出系統權限請求)
+            loadingMessage = "正在準備網路連線..."
+            print("🚀 App 啟動：觸發 Local Network 權限...")
+            await triggerLocalNetworkPermission()
 
             // 4. 系統就緒
             print("🚀 App 啟動完成！")
@@ -88,59 +86,72 @@ struct ContentView: View {
             Text("請在設定中允許麥克風和語音辨識權限，以使用語音功能。")
         }
     }
+    
+    // MARK: - Local Network Permission Trigger
 
-    // MARK: - Keyboard Pre-warming
+    /// 觸發 Local Network 權限請求
+    /// iOS 會在首次網路連線時彈出權限提示，這裡主動觸發
+    private func triggerLocalNetworkPermission() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            // 使用 Sendable 的狀態類來管理並發訪問
+            final class ResumeState: @unchecked Sendable {
+                private var _hasResumed = false
+                private let lock = NSLock()
 
-    /// 預熱鍵盤，消除首次點擊延遲
-    private func preWarmKeyboard() async {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                // 觸發鍵盤預熱通知
-                NotificationCenter.default.post(name: .keyboardPreWarmTrigger, object: nil)
+                func checkAndSet() -> Bool {
+                    lock.lock()
+                    defer { lock.unlock() }
+                    if _hasResumed {
+                        return true
+                    }
+                    _hasResumed = true
+                    return false
+                }
+            }
 
-                // 等待一小段時間讓鍵盤完成初始化
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    print("⌨️ 鍵盤預熱完成")
+            let resumeState = ResumeState()
+
+            // 發送一個 UDP 廣播來觸發 Local Network 權限
+            let connection = NWConnection(
+                host: "255.255.255.255",
+                port: NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultUDPPort)),
+                using: .udp
+            )
+
+            connection.stateUpdateHandler = { state in
+                switch state {
+                case .ready:
+                    // 連線就緒，發送一個空包觸發權限
+                    guard let payload = "PING".data(using: .utf8) else { return }
+                    connection.send(content: payload, completion: .contentProcessed { _ in
+                        connection.cancel()
+                    })
+                case .failed, .cancelled:
+                    // 失敗或取消時立即 resume
+                    if !resumeState.checkAndSet() {
+                        connection.cancel()
+                        print("🌐 Local Network 權限觸發失敗或取消")
+                        DispatchQueue.main.async {
+                            continuation.resume()
+                        }
+                    }
+                default:
+                    break
+                }
+            }
+
+            connection.start(queue: .global())
+
+            // Timeout 兜底：等待足夠時間讓系統彈出權限對話框
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.Timeout.localNetworkPermission) {
+                if !resumeState.checkAndSet() {
+                    connection.cancel()
+                    print("🌐 Local Network 權限觸發完成")
                     continuation.resume()
                 }
             }
         }
     }
-}
-
-// MARK: - Keyboard Pre-warmer
-
-/// 隱藏的 TextField，用於在啟動時預熱鍵盤
-struct KeyboardPreWarmer: UIViewRepresentable {
-    func makeUIView(context: Context) -> UITextField {
-        let textField = UITextField()
-        textField.isHidden = true
-        textField.frame = .zero
-
-        // 監聽預熱觸發通知
-        NotificationCenter.default.addObserver(
-            forName: .keyboardPreWarmTrigger,
-            object: nil,
-            queue: .main
-        ) { _ in
-            // 成為 first responder 觸發鍵盤載入
-            textField.becomeFirstResponder()
-            // 立即 resign 隱藏鍵盤
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                textField.resignFirstResponder()
-            }
-        }
-
-        return textField
-    }
-
-    func updateUIView(_ uiView: UITextField, context: Context) {}
-}
-
-// MARK: - Notification Extension
-
-extension Notification.Name {
-    static let keyboardPreWarmTrigger = Notification.Name("keyboardPreWarmTrigger")
 }
 
 // MARK: - Startup Loading View

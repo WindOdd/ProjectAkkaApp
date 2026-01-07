@@ -83,11 +83,10 @@ class TTSService: NSObject, ObservableObject {
         
         // 設定語速
         // AVSpeechUtterance.rate 範圍：0.0 (最慢) ~ 1.0 (最快)
-        // 正常語速約為 0.5，我們的 rate 輸入也是 0.0 ~ 1.0
-        // 將輸入映射到 0.1 ~ 0.6 的範圍 (避免太快或太慢)
-        let minRate: Float = 0.1
-        let maxRate: Float = 0.6
-        utterance.rate = minRate + (rate * (maxRate - minRate))
+        // 直接使用 1:1 映射，讓使用者有完整控制
+        utterance.rate = rate
+        
+        print("🎚️ TTS 語速設定 - 輸入: \(rate), 實際: \(utterance.rate)")
         
         isSpeaking = true
         synthesizer?.speak(utterance)

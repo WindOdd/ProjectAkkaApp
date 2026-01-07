@@ -8,12 +8,9 @@
 import Foundation
 import Combine
 
+@MainActor
 class SettingsStore: ObservableObject {
-    @Published var settings: AppSettings {
-        didSet {
-            save()
-        }
-    }
+    @Published var settings: AppSettings
     
     private let key = "com.projectakka.settings"
     
@@ -27,8 +24,8 @@ class SettingsStore: ObservableObject {
     }
     
     // MARK: - Persistence
-    
-    private func save() {
+
+    func save() {
         if let data = try? JSONEncoder().encode(settings) {
             UserDefaults.standard.set(data, forKey: key)
         }
@@ -36,6 +33,7 @@ class SettingsStore: ObservableObject {
     
     func reset() {
         settings = AppSettings()
+        save()
     }
     
     // MARK: - Computed Properties

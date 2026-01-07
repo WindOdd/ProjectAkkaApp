@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class SessionManager: ObservableObject {
     @Published private(set) var sessionId: String?
     @Published private(set) var currentGame: Game?

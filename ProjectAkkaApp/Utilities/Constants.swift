@@ -9,7 +9,8 @@ import Foundation
 
 enum Constants {
     // MARK: - Network
-    static let defaultPort: Int = 37020
+    static let defaultHTTPPort: Int = 8000        // HTTP API 端口
+    static let defaultUDPPort: Int = 37020        // UDP 廣播端口
     static let udpDiscoveryPayload = "DISCOVER_AKKA_SERVER"
     
     // MARK: - Timeout (seconds)
@@ -22,6 +23,8 @@ enum Constants {
         static let chatRequestConnect: TimeInterval = 5
         /// 對話請求 - 讀取逾時 (等待 RAG)
         static let chatRequestRead: TimeInterval = 30
+        /// Local Network 權限觸發超時
+        static let localNetworkPermission: TimeInterval = 1.5
     }
     
     // MARK: - Recording
@@ -44,6 +47,8 @@ enum Constants {
         static let sleepDuration: TimeInterval = 30
         /// 最大輪數
         static let maxRounds = 10
+        /// UDP 接收緩衝區大小 (bytes)
+        static let receiveBufferSize = 2048
     }
     
     // MARK: - History

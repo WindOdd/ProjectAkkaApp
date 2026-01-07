@@ -9,6 +9,8 @@ import Foundation
 import Speech
 import AVFoundation
 import Combine
+
+@MainActor
 class SpeechRecognitionService: ObservableObject {
     @Published var transcript = ""
     @Published var isRecording = false
@@ -27,10 +29,35 @@ class SpeechRecognitionService: ObservableObject {
         self.keywordManager = keywordManager
         self.recognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-TW"))
     }
-    
+
+    deinit {
+        // 清理非 MainActor 隔離的資源
+        // 注意: deinit 是 nonisolated 的，無法訪問 @MainActor 隔離的屬性/方法
+
+        // 停止 Timer
+        timer?.invalidate()
+
+        // 停止 Audio Engine
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
+        }
+
+        // 取消 Recognition Task
+        recognitionTask?.cancel()
+
+        print("🎤 SpeechRecognitionService 已釋放")
+    }
+
     // MARK: - Recording Control
     
     func startRecording() throws {
+        // 🔑 防止重複錄音
+        guard !isRecording else {
+            print("⚠️ 已在錄音中，忽略重複啟動")
+            return
+        }
+        
         guard let recognizer = recognizer, recognizer.isAvailable else {
             throw SpeechError.recognizerNotAvailable
         }
@@ -63,6 +90,9 @@ class SpeechRecognitionService: ObservableObject {
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
         
+        // 🔑 移除現有的 tap (防止重複 installTap 導致崩潰)
+        inputNode.removeTap(onBus: 0)
+        
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
             request.append(buffer)
         }
@@ -76,14 +106,16 @@ class SpeechRecognitionService: ObservableObject {
         // 開始辨識
         recognitionTask = recognizer.recognitionTask(with: request) { [weak self] result, error in
             guard let self = self else { return }
-            
-            if let result = result {
-                self.transcript = result.bestTranscription.formattedString
-            }
-            
-            if let error = error {
-                self.errorMessage = error.localizedDescription
-                self.stopRecording()
+
+            Task { @MainActor in
+                if let result = result {
+                    self.transcript = result.bestTranscription.formattedString
+                }
+
+                if let error = error {
+                    self.errorMessage = error.localizedDescription
+                    self.stopRecording()
+                }
             }
         }
         
@@ -91,6 +123,9 @@ class SpeechRecognitionService: ObservableObject {
     }
     
     func stopRecording() {
+        // 🔑 防止重複停止
+        guard isRecording else { return }
+        
         stopTimer()
         
         audioEngine.stop()
@@ -103,32 +138,42 @@ class SpeechRecognitionService: ObservableObject {
         recognitionTask = nil
         
         isRecording = false
-        
+
         // 重設 Audio Session (為 TTS 準備)
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.playback, mode: .default)
             try audioSession.setActive(true)
         } catch {
-            print("⚠️ Audio Session 重設失敗: \(error)")
+            errorMessage = "Audio Session 重設失敗: \(error.localizedDescription)"
+            print("⚠️ \(errorMessage ?? "")")
         }
-        
+
         print("🎤 停止錄音，辨識結果: \(transcript)")
     }
     
     // MARK: - Timer
-    
+
     private func startTimer() {
+        // 確保 Timer 在主線程創建並執行
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
-            
-            self.elapsedTime += 1
-            
-            // 40 秒強制結束
-            if self.elapsedTime >= Constants.Recording.maxDuration {
-                self.stopRecording()
-                print("⏱️ 達到 40 秒上限，自動停止錄音")
+
+            // 明確在主線程執行更新
+            Task { @MainActor in
+                self.elapsedTime += 1
+
+                // 40 秒強制結束
+                if self.elapsedTime >= Constants.Recording.maxDuration {
+                    self.stopRecording()
+                    print("⏱️ 達到 40 秒上限，自動停止錄音")
+                }
             }
+        }
+
+        // 將 Timer 加到主 RunLoop 確保正確執行
+        if let timer = timer {
+            RunLoop.main.add(timer, forMode: .common)
         }
     }
     
@@ -153,13 +198,16 @@ class SpeechRecognitionService: ObservableObject {
 enum SpeechError: Error, LocalizedError {
     case recognizerNotAvailable
     case requestCreationFailed
-    
+    case audioSessionFailed(Error)
+
     var errorDescription: String? {
         switch self {
         case .recognizerNotAvailable:
             return "語音辨識服務不可用"
         case .requestCreationFailed:
             return "無法建立語音辨識請求"
+        case .audioSessionFailed(let error):
+            return "Audio Session 設定失敗: \(error.localizedDescription)"
         }
     }
 }

@@ -8,6 +8,11 @@
 import Foundation
 
 struct KeywordsResponse: Codable {
-    let id: String
-    let keywords: [String]  // ["卡卡頌", "米寶", "板塊"]
+    let gameId: String
+    let keywords: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case gameId = "game_id"
+        case keywords
+    }
 }

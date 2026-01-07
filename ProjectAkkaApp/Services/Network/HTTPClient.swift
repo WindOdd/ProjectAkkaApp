@@ -8,14 +8,10 @@
 import Foundation
 
 class HTTPClient {
-    private var baseURL: String
-    
+    private let baseURL: String
+
     init(baseURL: String) {
         self.baseURL = baseURL
-    }
-    
-    func updateBaseURL(_ newURL: String) {
-        self.baseURL = newURL
     }
     
     // MARK: - GET /api/games

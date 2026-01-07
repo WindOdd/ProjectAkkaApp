@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct ServerDiscoveryResponse: Codable, Sendable {
+struct ServerDiscoveryResponse: Codable, @unchecked Sendable {
     let ip: String
     let port: Int
-    let status: String     // "ready"
+    let status: String?     // "ready" (可選，Server 可能不回傳)
 }

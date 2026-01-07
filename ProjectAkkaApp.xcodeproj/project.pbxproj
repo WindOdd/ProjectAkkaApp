@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		990DBD692F0E022000E11848 /* ChatBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990DBD682F0E022000E11848 /* ChatBubble.swift */; };
 		9956B1952F0CAFAC00132D15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9956B1912F0CAFAC00132D15 /* Assets.xcassets */; };
 		9956B1962F0CAFAC00132D15 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9956B16A2F0CAFAC00132D15 /* Localizable.strings */; };
 		9956B1972F0CAFAC00132D15 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9956B15D2F0CAFAC00132D15 /* HistoryManager.swift */; };
@@ -50,6 +51,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		990DBD682F0E022000E11848 /* ChatBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubble.swift; sourceTree = "<group>"; };
 		991267E12F0CA87300DC322C /* ProjectAkkaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectAkkaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9956B15A2F0CAFAC00132D15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9956B15B2F0CAFAC00132D15 /* ProjectAkkaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectAkkaApp.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 		9956B1852F0CAFAC00132D15 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				990DBD682F0E022000E11848 /* ChatBubble.swift */,
 				9956B1832F0CAFAC00132D15 /* CountdownIndicator.swift */,
 				9956B1842F0CAFAC00132D15 /* StatusBanner.swift */,
 			);
@@ -379,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9956B1972F0CAFAC00132D15 /* HistoryManager.swift in Sources */,
+				990DBD692F0E022000E11848 /* ChatBubble.swift in Sources */,
 				9956B1982F0CAFAC00132D15 /* SettingsView.swift in Sources */,
 				9956B1992F0CAFAC00132D15 /* AppSettings.swift in Sources */,
 				9956B19A2F0CAFAC00132D15 /* LoadingOverlay.swift in Sources */,
