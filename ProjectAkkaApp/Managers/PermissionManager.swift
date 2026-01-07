@@ -64,18 +64,20 @@ class PermissionManager: ObservableObject {
     func requestMicrophonePermission() async -> Bool {
         return await withCheckedContinuation { continuation in
             AVAudioSession.sharedInstance().requestRecordPermission { granted in
-                DispatchQueue.main.async {
+                // 使用 Task { @MainActor } 回到 MainActor 上下文
+                Task { @MainActor in
                     self.microphoneStatus = granted ? .authorized : .denied
                     continuation.resume(returning: granted)
                 }
             }
         }
     }
-    
+
     func requestSpeechRecognitionPermission() async -> Bool {
         return await withCheckedContinuation { continuation in
             SFSpeechRecognizer.requestAuthorization { status in
-                DispatchQueue.main.async {
+                // 使用 Task { @MainActor } 回到 MainActor 上下文
+                Task { @MainActor in
                     switch status {
                     case .authorized:
                         self.speechRecognitionStatus = .authorized

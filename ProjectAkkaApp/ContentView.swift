@@ -88,41 +88,53 @@ struct ContentView: View {
     }
     
     // MARK: - Local Network Permission Trigger
-    
+
     /// 觸發 Local Network 權限請求
     /// iOS 會在首次網路連線時彈出權限提示，這裡主動觸發
     private func triggerLocalNetworkPermission() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            var hasResumed = false
+
             // 發送一個 UDP 廣播來觸發 Local Network 權限
             let connection = NWConnection(
                 host: "255.255.255.255",
                 port: NWEndpoint.Port(integerLiteral: UInt16(Constants.defaultUDPPort)),
                 using: .udp
             )
-            
+
             connection.stateUpdateHandler = { state in
                 switch state {
                 case .ready:
                     // 連線就緒，發送一個空包觸發權限
-                    let payload = "PING".data(using: .utf8)!
+                    guard let payload = "PING".data(using: .utf8) else { return }
                     connection.send(content: payload, completion: .contentProcessed { _ in
                         connection.cancel()
                     })
                 case .failed, .cancelled:
-                    break
+                    // 失敗或取消時立即 resume
+                    if !hasResumed {
+                        hasResumed = true
+                        connection.cancel()
+                        print("🌐 Local Network 權限觸發失敗或取消")
+                        DispatchQueue.main.async {
+                            continuation.resume()
+                        }
+                    }
                 default:
                     break
                 }
             }
-            
+
             connection.start(queue: .global())
-            
-            // 等待足夠時間讓系統彈出權限對話框
-            // 使用者授權後會自動繼續
+
+            // Timeout 兜底：等待足夠時間讓系統彈出權限對話框
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                connection.cancel()
-                print("🌐 Local Network 權限觸發完成")
-                continuation.resume()
+                if !hasResumed {
+                    hasResumed = true
+                    connection.cancel()
+                    print("🌐 Local Network 權限觸發完成")
+                    continuation.resume()
+                }
             }
         }
     }

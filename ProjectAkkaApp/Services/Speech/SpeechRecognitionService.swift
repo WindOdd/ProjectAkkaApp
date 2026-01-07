@@ -29,7 +29,22 @@ class SpeechRecognitionService: ObservableObject {
         self.keywordManager = keywordManager
         self.recognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-TW"))
     }
-    
+
+    deinit {
+        // 確保所有資源被正確釋放
+        if isRecording {
+            stopRecording()
+        }
+        stopTimer()
+
+        // 確保 audio engine 完全停止
+        if audioEngine.isRunning {
+            audioEngine.stop()
+        }
+
+        print("🎤 SpeechRecognitionService 已釋放")
+    }
+
     // MARK: - Recording Control
     
     func startRecording() throws {
@@ -122,18 +137,27 @@ class SpeechRecognitionService: ObservableObject {
     }
     
     // MARK: - Timer
-    
+
     private func startTimer() {
+        // 確保 Timer 在主線程創建並執行
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
-            
-            self.elapsedTime += 1
-            
-            // 40 秒強制結束
-            if self.elapsedTime >= Constants.Recording.maxDuration {
-                self.stopRecording()
-                print("⏱️ 達到 40 秒上限，自動停止錄音")
+
+            // 明確在主線程執行更新
+            Task { @MainActor in
+                self.elapsedTime += 1
+
+                // 40 秒強制結束
+                if self.elapsedTime >= Constants.Recording.maxDuration {
+                    self.stopRecording()
+                    print("⏱️ 達到 40 秒上限，自動停止錄音")
+                }
             }
+        }
+
+        // 將 Timer 加到主 RunLoop 確保正確執行
+        if let timer = timer {
+            RunLoop.main.add(timer, forMode: .common)
         }
     }
     
