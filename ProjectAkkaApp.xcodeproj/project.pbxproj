@@ -93,7 +93,6 @@
 		9956B18E2F0CAFAC00132D15 /* TTSSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSSettingsView.swift; sourceTree = "<group>"; };
 		9956B1912F0CAFAC00132D15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9956B1922F0CAFAC00132D15 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		9956B1BE2F0CB0A100132D15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,7 +292,6 @@
 		9956B1942F0CAFAC00132D15 /* ProjectAkkaApp */ = {
 			isa = PBXGroup;
 			children = (
-				9956B1BE2F0CB0A100132D15 /* Info.plist */,
 				9956B15C2F0CAFAC00132D15 /* App */,
 				9956B1612F0CAFAC00132D15 /* Managers */,
 				9956B1692F0CAFAC00132D15 /* Models */,
